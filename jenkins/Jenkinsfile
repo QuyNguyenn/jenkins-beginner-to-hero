@@ -53,7 +53,7 @@ pipeline {
 		}
 		stage("Creating AMI") {
 			when {
-				equal expected: true, actual: params.BUILD_AMI
+				equals expected: true, actual: params.BUILD_AMI
 			}
 			steps {
 				build(job: 'Build AMI', parameters: [[name: "BUILD_VERSION", value: buildVersion]])
