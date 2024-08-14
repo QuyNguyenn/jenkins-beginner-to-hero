@@ -9,7 +9,7 @@ pipeline {
 		stage("Build AMI") {
 			steps {
 				script {
-					if (BUILD_VERSION == "") {
+					if (params.BUILD_VERSION == "") {
 						echo "BUILD_VERSION is not specified."
 						exit 1
 					} else {
