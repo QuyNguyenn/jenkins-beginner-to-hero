@@ -1,0 +1,67 @@
+pipeline {
+	agent any
+
+	environment {
+		ARTIFACT = "demo_artifact"
+		AWS_KEY = credentials("dummy")
+		AWS_SECRET = credentials("dummy")
+	}
+
+	parameters {
+		string(name: "BUILD_VERSION", defaultValue: "", description: "Input manual build version if needed")
+		booleanParam(name: "BUILD_AMI", defaultValue: true, description: "")
+	}
+
+	stages {
+		def buildVersion = BUILD_VERSION
+
+		stage("Building") {
+			steps {
+				echo "Artifact: ${ARTIFACT}"
+				echo "AWS token: ${AWS_KEY}"
+				echo "AWS secret: ${AWS_SECRET}"
+				echo "Environmet.BUILD_ID: ${env.BUILD_ID}"
+				echo "Environmet.BUILD_NUMBER: ${env.BUILD_NUMBER}"
+				echo "Environmet.BUILD_TAG: ${env.BUILD_TAG}"
+				echo "Environmet.BUILD_URL: ${env.BUILD_URL}"
+				echo "Environmet.JOB_NAME: ${env.JOB_NAME}"
+
+				script {
+					if (buildVersion == "") {
+						echo "Build version is not specified, generate automatically."
+						buildVersion = generateBuildVersion(ARTIFACT)
+					}
+				}
+
+				echo "Building: ${buildVersion}"
+			}
+		}
+		stage("Unit Testing") {
+			steps {
+				echo "Unit Testing"
+			}
+		}
+		stage("IT Testing") {
+			steps {
+				echo "IT Testing"
+			}
+		}
+		stage("Deploying Artifacts") {
+			steps {
+				echo "Deploying Artifacts"
+			}
+		}
+		stage("Creating AMI") {
+			when {
+				equal expected: true, actual: params.BUILD_AMI
+			}
+			steps {
+				build(job: 'Build AMI', parameters: [[string, name: "BUILD_VERSION", value: buildVersion]])
+			}
+		}
+	}
+}
+
+def generateBuildVersion(artifact) {
+	return "${artifact}_${env.BUILD_ID}"
+}
