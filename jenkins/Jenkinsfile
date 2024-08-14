@@ -5,6 +5,7 @@ pipeline {
 		ARTIFACT = "demo_artifact"
 		AWS_KEY = credentials("dummy")
 		AWS_SECRET = credentials("dummy")
+		buildVersion = ""
 	}
 
 	parameters {
@@ -13,8 +14,6 @@ pipeline {
 	}
 
 	stages {
-		def buildVersion = BUILD_VERSION
-
 		stage("Building") {
 			steps {
 				echo "Artifact: ${ARTIFACT}"
@@ -27,9 +26,11 @@ pipeline {
 				echo "Environmet.JOB_NAME: ${env.JOB_NAME}"
 
 				script {
-					if (buildVersion == "") {
+					if (BUILD_VERSION == "") {
 						echo "Build version is not specified, generate automatically."
 						buildVersion = generateBuildVersion(ARTIFACT)
+					} else {
+						buildVersion = BUILD_VERSION
 					}
 				}
 
