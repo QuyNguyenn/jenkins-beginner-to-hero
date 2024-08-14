@@ -19,7 +19,9 @@ pipeline {
 			}
 		}
 		stage("Clean Up") {
-			echo "Clean Up"
+			steps {
+				echo "Clean Up"
+			}
 		}
 	}
 }
