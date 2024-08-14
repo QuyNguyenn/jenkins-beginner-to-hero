@@ -57,7 +57,7 @@ pipeline {
 				equals expected: true, actual: params.BUILD_AMI
 			}
 			steps {
-				build(job: 'Build AMI', parameters: [[name: "BUILD_VERSION", value: buildVersion]])
+				build(job: 'Build AMI', parameters: [string(name: "BUILD_VERSION", value: buildVersion)])
 			}
 		}
 	}
